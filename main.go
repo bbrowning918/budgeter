@@ -1,23 +1,24 @@
 package main
 
 import (
-	"encoding/csv"
+	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"strconv"
 )
 
 func main() {
-	fd, err := os.Open("book.csv")
+	f := flag.String("f", "book.csv.example", "csv file to load")
+	flag.Parse()
+
+	file, err := os.Open(*f)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer fd.Close()
+	defer file.Close()
 
-	reader := csv.NewReader(fd)
-	l, err := build(reader)
+	l, err := parse(file)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,7 +28,7 @@ func main() {
 	fmt.Println(toString(balance))
 
 	fmt.Println("-- budget --")
-	for _, category := range []Category{Needs, Wants, Savings} {
+	for _, category := range []category{needs, wants, savings} {
 		total := l.totalFor(category)
 
 		name, err := category.toString()
@@ -38,10 +39,10 @@ func main() {
 		fmt.Println(name, ":", toString(total))
 	}
 
-	income := l.totalFor(Income)
+	income := l.totalFor(income)
 	fmt.Println("-- targets --")
-	for _, category := range []Category{Needs, Wants, Savings} {
-		target, err := Target(income, category)
+	for _, category := range []category{needs, wants, savings} {
+		target, err := target(income, category)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -55,32 +56,14 @@ func main() {
 	}
 }
 
-func build(r *csv.Reader) (Ledger, error) {
-	l := Ledger{}
-	for {
-		record, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return l, err
-		}
-
-		amount, err := strconv.Atoi(record[2])
-		if err != nil {
-			return l, err
-		}
-		category, err := toCategory(record[1])
-		if err != nil {
-			return l, err
-		}
-		l = append(l, Line{record[0], category, amount})
+func toString(amount int) string {
+	if amount < 0 {
+		return "$0.00"
+	}
+	if amount < 100 {
+		return "$0." + fmt.Sprintf("%02d", amount)
 	}
 
-	return l, nil
-}
-
-func toString(amount int) string {
 	decimal := 2
 	thousand := ","
 
