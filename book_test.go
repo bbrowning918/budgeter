@@ -4,17 +4,17 @@ import (
 	"testing"
 )
 
-func TestCategory_toString(t *testing.T) {
+func TestCategoryToString(t *testing.T) {
 	cases := []struct {
 		name     string
-		category Category
+		category category
 		expected string
 		errMsg   string
 	}{
-		{"income", Income, "income", ""},
-		{"needs", Needs, "needs", ""},
-		{"wants", Wants, "wants", ""},
-		{"savings", Savings, "savings", ""},
+		{"income", income, "income", ""},
+		{"needs", needs, "needs", ""},
+		{"wants", wants, "wants", ""},
+		{"savings", savings, "savings", ""},
 		{"no match", -1, "", "no toString() match for category -1"},
 	}
 
@@ -37,17 +37,17 @@ func TestCategory_toString(t *testing.T) {
 	}
 }
 
-func Test_toCategory(t *testing.T) {
+func TestStringToCategory(t *testing.T) {
 	cases := []struct {
 		name     string
 		input    string
-		expected Category
+		expected category
 		errMsg   string
 	}{
-		{"income case sensitive", "income", Income, ""},
-		{"needs case sensitive", "needs", Needs, ""},
-		{"wants case sensitive", "wants", Wants, ""},
-		{"savings case sensitive", "savings", Savings, ""},
+		{"income case sensitive", "income", income, ""},
+		{"needs case sensitive", "needs", needs, ""},
+		{"wants case sensitive", "wants", wants, ""},
+		{"savings case sensitive", "savings", savings, ""},
 		{"no match", "wrong", 0, "no category match for string wrong"},
 	}
 
@@ -70,32 +70,32 @@ func Test_toCategory(t *testing.T) {
 	}
 }
 
-func TestLedger_totalFor(t *testing.T) {
-	ledger := Ledger{
-		{"income", Income, 100000},
-		{"need1", Needs, 45000},
-		{"need2", Needs, 15000},
+func TestLedgerTotalFor(t *testing.T) {
+	ledger := ledger{
+		{"income", income, 100000},
+		{"need1", needs, 45000},
+		{"need2", needs, 15000},
 	}
 
-	if result := ledger.totalFor(Savings); result != 0 {
+	if result := ledger.totalFor(savings); result != 0 {
 		t.Errorf("expected default of 0, got %d", result)
 	}
 
-	if result := ledger.totalFor(Needs); result != 60000 {
+	if result := ledger.totalFor(needs); result != 60000 {
 		t.Errorf("expected needs total of 60000, got %d", result)
 	}
 }
 
-func TestLedger_balance(t *testing.T) {
-	empty := Ledger{}
+func TestLedgerBalance(t *testing.T) {
+	empty := ledger{}
 	if result := empty.balance(); result != 0 {
 		t.Errorf("expected default of 0, got %d", result)
 	}
 
-	ledger := Ledger{
-		{"income", Income, 100000},
-		{"need1", Needs, 45000},
-		{"need2", Needs, 15000},
+	ledger := ledger{
+		{"income", income, 100000},
+		{"need1", needs, 45000},
+		{"need2", needs, 15000},
 	}
 
 	if result := ledger.balance(); result != 40000 {

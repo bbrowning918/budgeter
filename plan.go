@@ -10,18 +10,18 @@ const (
 	savingsTarget = 20
 )
 
-func Target(totalIncome int, c Category) (int, error) {
+func target(totalIncome int, c category) (int, error) {
 	if totalIncome < 0 {
 		return 0, fmt.Errorf("income cannot be less than 0")
 	}
 	switch c {
-	case Income:
+	case income:
 		return 0, fmt.Errorf("cannot find target for income")
-	case Needs:
+	case needs:
 		return (needsTarget * totalIncome) / 100, nil
-	case Wants:
+	case wants:
 		return (wantsTarget * totalIncome) / 100, nil
-	case Savings:
+	case savings:
 		return (savingsTarget * totalIncome) / 100, nil
 	default:
 		return 0, fmt.Errorf("no target match for category %d", c)
