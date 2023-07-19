@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	f := flag.String("f", "book.csv.example", "csv file to load")
+	f := flag.String("f", "budget.csv.example", "csv file to load")
 	flag.Parse()
 
 	file, err := os.Open(*f)
