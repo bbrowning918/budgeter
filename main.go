@@ -9,14 +9,19 @@ import (
 )
 
 func main() {
-	f := flag.String("f", "budget.csv.example", "csv file to load")
+	f := flag.String("file", "budget.csv.example", "csv file to load")
 	flag.Parse()
 
 	file, err := os.Open(*f)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	defer func() {
+		err := file.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	l, err := parse(file)
 	if err != nil {
