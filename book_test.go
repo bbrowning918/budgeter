@@ -1,6 +1,8 @@
 package main
 
 import (
+	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -9,28 +11,19 @@ func TestCategoryToString(t *testing.T) {
 		name     string
 		category category
 		expected string
-		errMsg   string
 	}{
-		{"income", income, "income", ""},
-		{"needs", needs, "needs", ""},
-		{"wants", wants, "wants", ""},
-		{"savings", savings, "savings", ""},
-		{"no match", -1, "", "no toString() match for category -1"},
+		{"income", income, "income"},
+		{"needs", needs, "needs"},
+		{"wants", wants, "wants"},
+		{"savings", savings, "savings"},
+		{"no match", -1, "unknown"},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			result, err := c.category.toString()
-			if result != c.expected {
-				t.Errorf("expected '%s', got '%s'", c.expected, result)
-			}
-
-			var errMsg string
-			if err != nil {
-				errMsg = err.Error()
-			}
-			if errMsg != c.errMsg {
-				t.Errorf("expected error '%s', got error '%s'", c.errMsg, errMsg)
+			result := c.category.toString()
+			if c.expected != result {
+				t.Errorf("expected: '%s', received: '%s'", c.expected, result)
 			}
 
 		})
@@ -48,23 +41,23 @@ func TestStringToCategory(t *testing.T) {
 		{"needs case sensitive", "needs", needs, ""},
 		{"wants case sensitive", "wants", wants, ""},
 		{"savings case sensitive", "savings", savings, ""},
-		{"no match", "wrong", 0, "no category match for string wrong"},
+		{"no match", "wrong", 0, "no category match for: wrong"},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			result, err := toCategory(c.input)
 
-			if result != c.expected {
-				t.Errorf("expected %c, got %c", c.expected, result)
+			if c.expected != result {
+				t.Errorf("expected: '%d', received: '%d'", c.expected, result)
 			}
 
 			var errMsg string
 			if err != nil {
 				errMsg = err.Error()
 			}
-			if errMsg != c.errMsg {
-				t.Errorf("expected error '%s', got '%s'", c.errMsg, errMsg)
+			if c.errMsg != errMsg {
+				t.Errorf("expected error: '%s', received: '%s'", c.errMsg, errMsg)
 			}
 		})
 	}
@@ -78,18 +71,18 @@ func TestLedgerTotalFor(t *testing.T) {
 	}
 
 	if result := ledger.totalFor(savings); result != 0 {
-		t.Errorf("expected default of 0, got %d", result)
+		t.Errorf("expected: '0', received: '%d'", result)
 	}
 
 	if result := ledger.totalFor(needs); result != 60000 {
-		t.Errorf("expected needs total of 60000, got %d", result)
+		t.Errorf("expected: '60000', received: '%d'", result)
 	}
 }
 
 func TestLedgerBalance(t *testing.T) {
 	empty := ledger{}
 	if result := empty.balance(); result != 0 {
-		t.Errorf("expected default of 0, got %d", result)
+		t.Errorf("expected: '0', received: '%d'", result)
 	}
 
 	ledger := ledger{
@@ -99,6 +92,38 @@ func TestLedgerBalance(t *testing.T) {
 	}
 
 	if result := ledger.balance(); result != 40000 {
-		t.Errorf("expected balance of 40000, got %d", result)
+		t.Errorf("expected: '40000', received: '%d'", result)
+	}
+}
+
+func TestParse(t *testing.T) {
+	cases := []struct {
+		name     string
+		input    string
+		expected ledger
+		errMsg   string
+	}{
+		{"line too short", "job,income", nil, "line does not have 3 values: [job income]"},
+		{"line too long", "job,income,500,100", nil, "line does not have 3 values: [job income 500 100]"},
+		{"amount is not int", "job,income,loads", nil, "could not parse as int: loads"},
+		{"unknown category", "job,money,1000", nil, "no category match for: money"},
+		{"valid line", "job,income,10000", ledger{{"job", income, 10000}}, ""},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			result, err := parse(strings.NewReader(c.input))
+			if !reflect.DeepEqual(c.expected, result) {
+				t.Errorf("expected: '%+v', received: '%+v'", c.expected, result)
+			}
+
+			var errMsg string
+			if err != nil {
+				errMsg = err.Error()
+			}
+			if c.errMsg != errMsg {
+				t.Errorf("expected error: '%s', received: '%s'", c.errMsg, errMsg)
+			}
+		})
 	}
 }

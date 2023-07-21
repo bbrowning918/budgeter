@@ -24,6 +24,6 @@ func target(totalIncome int, c category) (int, error) {
 	case savings:
 		return (savingsTarget * totalIncome) / 100, nil
 	default:
-		return 0, fmt.Errorf("no target match for category %d", c)
+		return 0, fmt.Errorf("no target match for: %d", c)
 	}
 }

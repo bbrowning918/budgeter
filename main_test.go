@@ -22,7 +22,7 @@ func TestAmountToString(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			result := toString(c.amount)
-			if result != c.expected {
+			if c.expected != result {
 				t.Errorf("expected '%s', got '%s", c.expected, result)
 			}
 		})

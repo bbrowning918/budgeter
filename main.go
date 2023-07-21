@@ -31,12 +31,7 @@ func main() {
 	for _, category := range []category{needs, wants, savings} {
 		total := l.totalFor(category)
 
-		name, err := category.toString()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println(name, ":", toString(total))
+		fmt.Println(category.toString(), ":", toString(total))
 	}
 
 	income := l.totalFor(income)
@@ -47,12 +42,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		categoryName, err := category.toString()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println(categoryName, ":", toString(target))
+		fmt.Println(category.toString(), ":", toString(target))
 	}
 }
 

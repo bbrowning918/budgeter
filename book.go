@@ -16,18 +16,18 @@ const (
 	savings
 )
 
-func (c category) toString() (string, error) {
+func (c category) toString() string {
 	switch c {
 	case income:
-		return "income", nil
+		return "income"
 	case needs:
-		return "needs", nil
+		return "needs"
 	case wants:
-		return "wants", nil
+		return "wants"
 	case savings:
-		return "savings", nil
+		return "savings"
 	default:
-		return "", fmt.Errorf("no toString() match for category %d", c)
+		return "unknown"
 	}
 }
 
@@ -42,7 +42,7 @@ func toCategory(s string) (category, error) {
 	case "savings":
 		return savings, nil
 	default:
-		return 0, fmt.Errorf("no category match for string %s", s)
+		return 0, fmt.Errorf("no category match for: %s", s)
 	}
 }
 
@@ -85,21 +85,21 @@ func parse(i io.Reader) (ledger, error) {
 			break
 		}
 		if err != nil {
-			return l, nil
+			return nil, err
 		}
 
 		if len(record) != 3 {
-			return l, fmt.Errorf("line does not have 3 values, got %s", record)
+			return nil, fmt.Errorf("line does not have 3 values: %s", record)
 		}
 
 		amount, err := strconv.Atoi(record[2])
 		if err != nil {
-			return l, err
+			return nil, fmt.Errorf("could not parse as int: %s", record[2])
 		}
 
 		c, err := toCategory(record[1])
 		if err != nil {
-			return l, err
+			return nil, err
 		}
 
 		l = append(l, line{record[0], c, amount})
