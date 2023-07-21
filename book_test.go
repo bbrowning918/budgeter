@@ -16,7 +16,7 @@ func TestCategoryToString(t *testing.T) {
 		{"needs", needs, "needs"},
 		{"wants", wants, "wants"},
 		{"savings", savings, "savings"},
-		{"no match", -1, "unknown"},
+		{"no match", 4, "unknown"},
 	}
 
 	for _, c := range cases {
