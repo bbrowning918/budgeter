@@ -1,4 +1,4 @@
-# Budget
+# Budgeter
 #### _I only wanted an excuse to play with Go_
 
 Build with `make`

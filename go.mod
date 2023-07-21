@@ -1,3 +1,3 @@
-module budget
+module budgeter
 
 go 1.20
