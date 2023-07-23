@@ -13,5 +13,5 @@ vet: fmt
 .PHONY:vet
 
 build: vet
-	go build -o bin/budget main.go book.go plan.go
+	go build
 .PHONY:build

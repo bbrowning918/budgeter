@@ -3,7 +3,7 @@
 
 Build with `make`
 
-The `-file` flag allows any formatted .csv file to be used
+The `-file` flag allows any matching format .csv file to be used
 
 ---
 Using `book.csv.example` where each line is: 
@@ -17,7 +17,7 @@ Using `book.csv.example` where each line is:
 
 ---
 
-Calculates and display:
+Calculates and displays:
 1. the overall balance of income minus needs, wants, and savings
 2. totals for each category
 3. baseline targets for each category
