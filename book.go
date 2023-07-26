@@ -10,7 +10,7 @@ import (
 type category int
 
 const (
-	income category = iota
+	income category = iota + 1
 	needs
 	wants
 	savings
@@ -42,7 +42,7 @@ func toCategory(s string) (category, error) {
 	case "savings":
 		return savings, nil
 	default:
-		return 0, fmt.Errorf("no category match for: %s", s)
+		return 0, fmt.Errorf("no category match for: '%s'", s)
 	}
 }
 
@@ -89,17 +89,17 @@ func parse(i io.Reader) (ledger, error) {
 		}
 
 		if len(record) != 3 {
-			return nil, fmt.Errorf("line does not have 3 values: %s", record)
+			return nil, fmt.Errorf("line does not have 3 values: '%s'", record)
 		}
 
 		amount, err := strconv.Atoi(record[2])
 		if err != nil {
-			return nil, fmt.Errorf("could not parse as int: %s", record[2])
+			return nil, fmt.Errorf("could not parse as int: '%s'", record[2])
 		}
 
 		c, err := toCategory(record[1])
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not parse as category: '%s', %s", record[1], err.Error())
 		}
 
 		l = append(l, line{record[0], c, amount})

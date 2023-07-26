@@ -11,7 +11,7 @@ const (
 )
 
 func target(l ledger, c category) (string, error) {
-	// TODO this is awkward, should pass in income totaled already
+	// TODO this is all kind of awkward to do, should it be a method on ledger, on category?
 	totalIncome := 0
 	for _, item := range l {
 		if item.category == income {

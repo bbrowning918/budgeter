@@ -12,11 +12,12 @@ func TestCategoryToString(t *testing.T) {
 		category category
 		expected string
 	}{
+		{"zero is not a valid category", 0, "unknown"},
 		{"income", income, "income"},
 		{"needs", needs, "needs"},
 		{"wants", wants, "wants"},
 		{"savings", savings, "savings"},
-		{"no match", 4, "unknown"},
+		{"no match", 5, "unknown"},
 	}
 
 	for _, c := range cases {
@@ -41,7 +42,7 @@ func TestStringToCategory(t *testing.T) {
 		{"needs case sensitive", "needs", needs, ""},
 		{"wants case sensitive", "wants", wants, ""},
 		{"savings case sensitive", "savings", savings, ""},
-		{"no match", "wrong", 0, "no category match for: wrong"},
+		{"no match", "wrong", 0, "no category match for: 'wrong'"},
 	}
 
 	for _, c := range cases {
@@ -103,10 +104,10 @@ func TestParse(t *testing.T) {
 		expected ledger
 		errMsg   string
 	}{
-		{"line too short", "job,income", nil, "line does not have 3 values: [job income]"},
-		{"line too long", "job,income,500,100", nil, "line does not have 3 values: [job income 500 100]"},
-		{"amount is not int", "job,income,loads", nil, "could not parse as int: loads"},
-		{"unknown category", "job,money,1000", nil, "no category match for: money"},
+		{"line too short", "job,income", nil, "line does not have 3 values: '[job income]'"},
+		{"line too long", "job,income,500,100", nil, "line does not have 3 values: '[job income 500 100]'"},
+		{"amount is not int", "job,income,loads", nil, "could not parse as int: 'loads'"},
+		{"unknown category", "job,money,1000", nil, "could not parse as category: 'money', no category match for: 'money'"},
 		{"valid line", "job,income,10000", ledger{{"job", income, 10000}}, ""},
 	}
 
