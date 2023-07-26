@@ -22,19 +22,20 @@ func target(l ledger, c category) (string, error) {
 		return "", fmt.Errorf("income cannot be less than 0")
 	}
 
+	var target int
 	switch c {
 	case income:
 		return "", fmt.Errorf("cannot find target for income")
 	case needs:
-		target := (needsTarget * totalIncome) / 100
-		return fmt.Sprintf("%s\t%s\t", c.toString(), toString(target)), nil
+		target = needsTarget
 	case wants:
-		target := (wantsTarget * totalIncome) / 100
-		return fmt.Sprintf("%s\t%s\t", c.toString(), toString(target)), nil
+		target = wantsTarget
 	case savings:
-		target := (savingsTarget * totalIncome) / 100
-		return fmt.Sprintf("%s\t%s\t", c.toString(), toString(target)), nil
+		target = savingsTarget
 	default:
 		return "", fmt.Errorf("no target match for: %d", c)
 	}
+
+	amount := (target * totalIncome) / 100
+	return fmt.Sprintf("%s\t%s\t", c.toString(), toString(amount)), nil
 }
