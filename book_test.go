@@ -65,24 +65,24 @@ func TestStringToCategory(t *testing.T) {
 
 func TestLedgerTotalFor(t *testing.T) {
 	ledger := ledger{
-		{"income", income, 100000},
+		{"income", income, 1000.00},
 		{"need1", needs, 45000},
 		{"need2", needs, 15000},
 	}
 
-	if result := ledger.totalFor(savings); result != 0 {
-		t.Errorf("expected: '0', received: '%d'", result)
+	if result := ledger.totalFor(savings); result != "savings\t$0.00\t" {
+		t.Errorf("expected: 'savings\t$0.00\t', received: '%s'", result)
 	}
 
-	if result := ledger.totalFor(needs); result != 60000 {
-		t.Errorf("expected: '60000', received: '%d'", result)
+	if result := ledger.totalFor(needs); result != "needs\t$600.00\t" {
+		t.Errorf("expected: 'needs\t$600.00\t', received: '%s'", result)
 	}
 }
 
 func TestLedgerBalance(t *testing.T) {
 	empty := ledger{}
-	if result := empty.balance(); result != 0 {
-		t.Errorf("expected: '0', received: '%d'", result)
+	if result := empty.balance(); result != "balance\t$0.00\t" {
+		t.Errorf("expected: 'balance\t$0.00\t', received: '%s'", result)
 	}
 
 	ledger := ledger{
@@ -91,8 +91,8 @@ func TestLedgerBalance(t *testing.T) {
 		{"need2", needs, 15000},
 	}
 
-	if result := ledger.balance(); result != 40000 {
-		t.Errorf("expected: '40000', received: '%d'", result)
+	if result := ledger.balance(); result != "balance\t$400.00\t" {
+		t.Errorf("expected: 'balance\t$400.00\t', received: '%s'", result)
 	}
 }
 

@@ -54,17 +54,17 @@ type line struct {
 
 type ledger []line
 
-func (l ledger) totalFor(c category) int {
+func (l ledger) totalFor(c category) string {
 	total := 0
 	for _, item := range l {
 		if item.category == c {
 			total += item.amount
 		}
 	}
-	return total
+	return fmt.Sprintf("%s\t%s\t", c.toString(), toString(total))
 }
 
-func (l ledger) balance() int {
+func (l ledger) balance() string {
 	balance := 0
 	for _, item := range l {
 		if item.category == income {
@@ -73,7 +73,7 @@ func (l ledger) balance() int {
 			balance -= item.amount
 		}
 	}
-	return balance
+	return fmt.Sprintf("balance\t%s\t", toString(balance))
 }
 
 func parse(i io.Reader) (ledger, error) {

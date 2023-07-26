@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
+	"text/tabwriter"
 )
 
 func main() {
@@ -28,45 +28,24 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("-- balance --")
-	balance := l.balance()
-	fmt.Println(toString(balance))
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+	fmt.Fprintln(w, l.balance())
 
-	fmt.Println("-- budget --")
-	for _, category := range []category{needs, wants, savings} {
-		total := l.totalFor(category)
-
-		fmt.Println(category.toString(), ":", toString(total))
+	fmt.Fprintln(w, "----- budget -----")
+	fmt.Fprintln(w, "category\tamount\t")
+	for _, category := range []category{income, needs, wants, savings} {
+		fmt.Fprintln(w, l.totalFor(category))
 	}
 
-	income := l.totalFor(income)
-	fmt.Println("-- targets --")
+	fmt.Fprintln(w, "----- targets -----")
+	fmt.Fprintln(w, "category\tamount\t")
 	for _, category := range []category{needs, wants, savings} {
-		target, err := target(income, category)
+		target, err := target(l, category)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		fmt.Println(category.toString(), ":", toString(target))
-	}
-}
-
-func toString(amount int) string {
-	if amount < 0 {
-		return "$0.00"
-	}
-	if amount < 100 {
-		return "$0." + fmt.Sprintf("%02d", amount)
+		fmt.Fprintln(w, target)
 	}
 
-	decimal := 2
-	thousand := ","
-
-	s := strconv.FormatInt(int64(amount), 10)
-	for i := len(s) - decimal - 3; i > 0; i -= 3 {
-		s = s[:i] + thousand + s[i:]
-	}
-
-	s = "$" + s[:len(s)-decimal] + "." + s[len(s)-decimal:]
-	return s
+	w.Flush()
 }

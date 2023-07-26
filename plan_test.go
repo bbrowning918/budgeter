@@ -5,27 +5,32 @@ import (
 )
 
 func TestTarget(t *testing.T) {
+	empty := ledger{}
+	l := ledger{
+		{"income", income, 10000},
+	}
+
 	cases := []struct {
-		name        string
-		totalIncome int
-		category    category
-		expected    int
-		errMsg      string
+		name     string
+		ledger   ledger
+		category category
+		expected string
+		errMsg   string
 	}{
-		{"cannot find target for income", 10000, income, 0, "cannot find target for income"},
-		{"no negative income", -1, needs, 0, "income cannot be less than 0"},
-		{"needs calculates to 50%", 10000, needs, 5000, ""},
-		{"wants calculates to 30%", 10000, wants, 3000, ""},
-		{"savings calculates to 20%", 10000, savings, 2000, ""},
-		{"no category match", 10000, 5, 0, "no target match for: 5"},
+		{"cannot find target for income", l, income, "", "cannot find target for income"},
+		{"no negative income", empty, needs, "", "income cannot be less than 0"},
+		{"needs calculates to 50%", l, needs, "needs\t$50.00\t", ""},
+		{"wants calculates to 30%", l, wants, "wants\t$30.00\t", ""},
+		{"savings calculates to 20%", l, savings, "savings\t$20.00\t", ""},
+		{"no category match", l, 5, "", "no target match for: 5"},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			result, err := target(c.totalIncome, c.category)
+			result, err := target(c.ledger, c.category)
 
 			if c.expected != result {
-				t.Errorf("expected '%d', got '%d'", c.expected, result)
+				t.Errorf("expected '%s', got '%s'", c.expected, result)
 			}
 
 			var errMsg string

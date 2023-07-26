@@ -10,20 +10,31 @@ const (
 	savingsTarget = 20
 )
 
-func target(totalIncome int, c category) (int, error) {
-	if totalIncome < 0 {
-		return 0, fmt.Errorf("income cannot be less than 0")
+func target(l ledger, c category) (string, error) {
+	// TODO this is awkward, should pass in income totaled already
+	totalIncome := 0
+	for _, item := range l {
+		if item.category == income {
+			totalIncome += item.amount
+		}
 	}
+	if totalIncome <= 0 {
+		return "", fmt.Errorf("income cannot be less than 0")
+	}
+
 	switch c {
 	case income:
-		return 0, fmt.Errorf("cannot find target for income")
+		return "", fmt.Errorf("cannot find target for income")
 	case needs:
-		return (needsTarget * totalIncome) / 100, nil
+		target := (needsTarget * totalIncome) / 100
+		return fmt.Sprintf("%s\t%s\t", c.toString(), toString(target)), nil
 	case wants:
-		return (wantsTarget * totalIncome) / 100, nil
+		target := (wantsTarget * totalIncome) / 100
+		return fmt.Sprintf("%s\t%s\t", c.toString(), toString(target)), nil
 	case savings:
-		return (savingsTarget * totalIncome) / 100, nil
+		target := (savingsTarget * totalIncome) / 100
+		return fmt.Sprintf("%s\t%s\t", c.toString(), toString(target)), nil
 	default:
-		return 0, fmt.Errorf("no target match for: %d", c)
+		return "", fmt.Errorf("no target match for: %d", c)
 	}
 }
