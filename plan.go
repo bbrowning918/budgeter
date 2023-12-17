@@ -11,7 +11,6 @@ const (
 )
 
 func target(l ledger, c category) (string, error) {
-	// TODO this is all kind of awkward to do, should it be a method on ledger, on category?
 	totalIncome := 0
 	for _, item := range l {
 		if item.category == income {
@@ -19,7 +18,7 @@ func target(l ledger, c category) (string, error) {
 		}
 	}
 	if totalIncome <= 0 {
-		return "", fmt.Errorf("income cannot be less than 0")
+		return "", fmt.Errorf("income cannot be 0 or negative")
 	}
 
 	var target int

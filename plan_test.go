@@ -18,7 +18,7 @@ func TestTarget(t *testing.T) {
 		errMsg   string
 	}{
 		{"cannot find target for income", l, income, "", "cannot find target for income"},
-		{"no negative income", empty, needs, "", "income cannot be less than 0"},
+		{"no negative income", empty, needs, "", "income cannot be 0 or negative"},
 		{"needs calculates to 50%", l, needs, "needs\t$50.00\t", ""},
 		{"wants calculates to 30%", l, wants, "wants\t$30.00\t", ""},
 		{"savings calculates to 20%", l, savings, "savings\t$20.00\t", ""},
