@@ -86,14 +86,23 @@ func TestLedgerBalance(t *testing.T) {
 		t.Errorf("expected: 'balance\t$0.00\t', received: '%s'", result)
 	}
 
-	ledger := ledger{
+	positive := ledger{
 		{"income", income, 100000},
 		{"need1", needs, 45000},
 		{"need2", needs, 15000},
 	}
 
-	if result := ledger.balance(); result != "balance\t$400.00\t" {
+	if result := positive.balance(); result != "balance\t$400.00\t" {
 		t.Errorf("expected: 'balance\t$400.00\t', received: '%s'", result)
+	}
+
+	negative := ledger{
+		{"income", income, 100000},
+		{"over budget", needs, 101000},
+	}
+
+	if result := negative.balance(); result != "balance\t-$10.00\t" {
+		t.Errorf("expected: 'balance\t-$10.00\t', received: '%s'", result)
 	}
 }
 

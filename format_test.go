@@ -10,7 +10,7 @@ func TestAmountToString(t *testing.T) {
 		amount   int
 		expected string
 	}{
-		{"negative is just 0", -1, "$0.00"},
+		{"negative", -1, "-$0.01"},
 		{"zero", 0, "$0.00"},
 		{"couple cents", 2, "$0.02"},
 		{"a dollar", 100, "$1.00"},

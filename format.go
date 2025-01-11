@@ -7,7 +7,7 @@ import (
 
 func toString(amount int) string {
 	if amount < 0 {
-		return "$0.00"
+		return "-" + toString(0-amount)
 	}
 	if amount < 100 {
 		return "$0." + fmt.Sprintf("%02d", amount)
